@@ -110,4 +110,32 @@ const exit = () => {
   });
 };
 
+const addRole = async () => {
+    // same as .then() above, gives us a Tuple
+    const [rows] = await db.findAllDepartments();
+    console.table(rows);
+    const departmentChoices = rows.map(({ name, id }) => ({ name, value: id }));
+    // console.log(departmentChoices);
+    const answer = await inquirer.prompt([
+      {
+        type: "input",
+      name: "name",
+      message: "What is the role title?",
+      validate: validateInput,
+      },
+      {
+        type: "input",
+        name: "salary",
+        message: "What is the salary for this role?",
+        validate: validateInput,
+      },
+      {
+        type: "list",
+        name: "department",
+        message: "Which department does this role belong to?",
+        choices: departmentChoices,
+      },
+    ]);
+    
+
   }

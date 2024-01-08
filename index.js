@@ -33,5 +33,63 @@ const exit = () => {
         },
     ]);
 
-    
+    answer.menu();
+
+    //   switch (answer.menu) {
+    //     case "View all departments":
+    //       return viewDepartments();
+    //     case "View all roles":
+    //       return viewRoles();
+    //     case "View all employees":
+    //       return viewEmployees();
+    //     case "Add a department":
+    //       return addDepartment();
+    //     case "Add a role":
+    //       return addRole();
+    //     case "Add an employee":
+    //       return addEmployee();
+    //     case "Update an employee role":
+    //       return updateEmployeeRole();
+    //     case "Update employee manager":
+    //       return updateEmployeeManager();
+    //     case "View employees by manager":
+    //       return viewByManager();
+    //     case "Exit":
+    //       console.log("Bye!");
+    //       break;
+    //   }    
+  };
+
+  function viewDepartments() {
+    db.findAllDepartments().then(([rows]) => {
+      console.table(rows);
+      return mainMenu();
+    });
+  }
+
+  function viewEmployees() {
+    db.findAllEmployees().then(([rows]) => {
+      console.table(rows);
+      return mainMenu();
+    });
+  }
+
+  function viewRoles() {
+    db.findAllRoles().then(([rows]) => {
+      console.table(rows);
+      return mainMenu();
+    });
+  }
+
+  function validateInput(value) {
+    if (value) {
+      return true;
+    } else {
+      console.log("\n Please enter a value");
+      return false;
+    }
+  }
+
+  
+
   }

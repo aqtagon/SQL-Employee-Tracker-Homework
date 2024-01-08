@@ -90,6 +90,24 @@ const exit = () => {
     }
   }
 
-  
+  const addDepartment = async () => {
+    const answer = await inquirer.prompt([
+      {
+        type: "input",
+        name: "name",
+        message: "What is the department name?",
+        validate: validateInput,
+      },
+    ]);
+    // console.log("answer", answer);
+    // console.log("answer.name", answer.name);
+    const departmentName = answer.name;
+  db.addADepartment(departmentName).then(() => {
+    db.findAllDepartments().then(([rows]) => {
+      console.table(rows);
+      return mainMenu();
+    });
+  });
+};
 
   }

@@ -264,5 +264,40 @@ const updateEmployeeRole = async () => {
                 name: `${first_name} ${last_name}`,
                 value: id
             }));
+            managerChoices.push({ name: "No manager selected", value: null });
+            //   renaming destructured property manager as data
+            //   const {manager:data} = await inquirer.prompt([
+            //   destructuring property and defining as variable
+            const { manager } = await inquirer.prompt([
+                {
+                    type: "list",
+                    name: "manager",
+                    message: "Who is this employee's new manager?",
+                    choices: managerChoices,
+                  },
+                ]);
+                db.updateAnEmployeeManager(manager, employee).then(() => {
+                    db.findAllEmployees().then(([rows]) => {
+                        console.table(rows);
+                        return mainMenu();
+                    });
+                });
+              };
+
+              const viewByManager = async () => {
+                const [allEmployees] = await db.findAllEmployees();
+                const managerChoices = allEmployees.map(mapEmployeeChoices);
+                const { manager } = await inquirer.prompt([
+                    {
+                        type: "list",
+                        name: "manager",
+                        message: "Which manager's employees do you want to see?",
+                        choices: managerChoices,
+                      },
+                    ]);
+                    const [managersEmployees] = await db.findByManager(manager);
+                    console.table(managersEmployees);
+                    return mainMenu();
+                };
 
   }

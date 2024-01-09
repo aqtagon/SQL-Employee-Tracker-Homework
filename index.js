@@ -136,6 +136,70 @@ const addRole = async () => {
         choices: departmentChoices,
       },
     ]);
-    
+    // console.log("answer", answer);
+    // console.log("answer.name", answer.name);
+
+    db.addARole(answer.name, answer.salary, answer.department).then(() => {
+        db.findAllRoles().then(([rows]) => {
+          console.table(rows);
+          return mainMenu();
+        });
+      });
+    };
+
+    function mapEmployeeChoices({ id, name }) {
+        return { name, value: id };
+      }
+
+      const addEmployee = async () => {
+        const [rowsA] = await db.findAllRoles();
+        console.table(rowsA);
+        const roleChoices = rowsA.map(({ id, title }) => ({
+          name: title,
+          value: id,
+        }));
+        console.log(roleChoices);
+
+        const [rowsB] = await db.findAllEmployees();
+        const employeeChoices = rowsB.map(mapEmployeeChoices);
+        console.log(employeeChoices);
+
+        const managerChoices = [...employeeChoices, { name: "Null" }];
+        console.log(managerChoices);
+        const answer = await inquirer.prompt([
+            {
+                type: "input",
+                name: "first_name",
+                message: "What is the employee's first name?",
+                validate: validateInput,
+              },
+              {
+                type: "input",
+                name: "last_name",
+                message: "What is the employee's last name?",
+                validate: validateInput,
+              },
+              {
+                type: "list",
+                name: "role_id",
+                message: "What is this employee's role?",
+                choices: roleChoices,
+              },
+              {
+                type: "confirm",
+                name: "managerOrNot",
+                message: "Does this employee have a manager?",
+                default: true,
+              },
+              {
+                type: "list",
+                name: "manager_id",
+                when: function (answers) {
+                  return answers.managerOrNot === true;
+                },
+                message: "Who is this employee's manager?",
+                choices: managerChoices,
+              },
+            ]);
 
   }

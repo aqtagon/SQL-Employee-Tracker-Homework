@@ -238,5 +238,31 @@ const updateEmployeeRole = async () => {
       },
     ]);
     console.log(answer);
+    db.updateAnEmployeeRole(answer.role, answer.employee).then(() => {
+        db.findAllEmployees().then(([rows]) => {
+          console.table(rows);
+          return mainMenu();
+        });
+      });
+    };
+
+    const updateEmployeeManager = async () => {
+        const [rowsB] = await db.findAllEmployees();
+        const employeeChoices = rowsB.map(mapEmployeeChoices);
+        console.log(employeeChoices);
+        const { employee } = await inquirer.prompt([
+            {
+                type: "list",
+                name: "employee",
+                message: "Which employee's manager do you want to update?",
+                choices: employeeChoices,
+              },
+            ])
+            const [managerRows] = await db.findAllManagers(employee);
+            console.table(managerRows);
+            const managerChoices = managerRows.map(({ id, first_name, last_name }) => ({
+                name: `${first_name} ${last_name}`,
+                value: id
+            }));
 
   }

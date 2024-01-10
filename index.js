@@ -71,34 +71,148 @@ async function viewEmployees() {
 }
 
 
+async function viewDepartments() {
+    try {
+        const [rows] = await db.findAllDepartments();
+        console.table(rows);
+    } catch (err) {
+        console.error('Failed to retrieve departments:', err);
+    }
+    mainMenu();
+}
+
+async function viewRoles() {
+    try {
+        const [rows] = await db.findAllRoles();
+        console.table(rows);
+    } catch (err) {
+        console.error('Failed to retrieve roles:', err);
+    }
+    mainMenu();
+}
+
+async function viewEmployees() {
+    try {
+        const [rows] = await db.findAllEmployees();
+        console.table(rows);
+    } catch (err) {
+        console.error('Failed to retrieve employees:', err);
+    }
+    mainMenu();
+}
+
 async function addDepartment() {
-    
+    const { departmentName } = await inquirer.prompt({
+        type: 'input',
+        name: 'departmentName',
+        message: 'What is the name of the new department?'
+    });
+    await db.addADepartment(departmentName);
+    console.log(`Added new department: ${departmentName}`);
+    mainMenu();
 }
 
 async function addRole() {
-    
+    const { title, salary, departmentId } = await inquirer.prompt([
+        {
+            type: 'input',
+            name: 'title',
+            message: 'What is the title of the new role?'
+        },
+        {
+            type: 'input',
+            name: 'salary',
+            message: 'What is the salary for this role?'
+        },
+        {
+            type: 'input',
+            name: 'departmentId',
+            message: 'Which department does this role belong to? (Enter Department ID)'
+        }
+    ]);
+    await db.addARole(title, salary, departmentId);
+    console.log(`Added new role: ${title}`);
+    mainMenu();
 }
 
 async function addEmployee() {
-    
+    const { firstName, lastName, roleId, managerId } = await inquirer.prompt([
+        {
+            type: 'input',
+            name: 'firstName',
+            message: 'What is the employee\'s first name?'
+        },
+        {
+            type: 'input',
+            name: 'lastName',
+            message: 'What is the employee\'s last name?'
+        },
+        {
+            type: 'input',
+            name: 'roleId',
+            message: 'What is the employee\'s role? (Enter Role ID)'
+        },
+        {
+            type: 'input',
+            name: 'managerId',
+            message: 'Who is the employee\'s manager? (Enter Manager ID or leave blank for none)',
+            default: null 
+        }
+    ]);
+    await db.addAnEmployee({ firstName, lastName, roleId, managerId });
+    console.log(`Added new employee: ${firstName} ${lastName}`);
+    mainMenu();
 }
-
 
 async function updateEmployeeRole() {
-    
+    const { employeeId, roleId } = await inquirer.prompt([
+        {
+            type: 'input',
+            name: 'employeeId',
+            message: 'Which employee do you want to update? (Enter Employee ID)'
+        },
+        {
+            type: 'input',
+            name: 'roleId',
+            message: 'What is the new role for the employee? (Enter Role ID)'
+        }
+    ]);
+    await db.updateAnEmployeeRole(employeeId, roleId);
+    console.log(`Updated employee's role.`);
+    mainMenu();
 }
 
-
 async function deleteDepartment() {
-    
+    const { departmentId } = await inquirer.prompt({
+        type: 'input',
+        name: 'departmentId',
+        message: 'Which department do you want to delete? (Enter Department ID)'
+    });
+    await db.deleteADepartment(departmentId);
+    console.log(`Deleted department.`);
+    mainMenu();
 }
 
 async function deleteRole() {
-    
+    const { roleId } = await inquirer.prompt({
+        type: 'input',
+        name: 'roleId',
+        message: 'Which role do you want to delete? (Enter Role ID)'
+    });
+    await db.deleteARole(roleId);
+    console.log(`Deleted role.`);
+    mainMenu();
 }
 
 async function deleteEmployee() {
-    
+    const { employeeId } = await inquirer.prompt({
+        type: 'input',
+        name: 'employeeId',
+        message: 'Which employee do you want to delete? (Enter Employee ID)'
+    });
+    await db.deleteAnEmployee(employeeId);
+    console.log(`Deleted employee.`);
+    mainMenu();
 }
 
 mainMenu();
